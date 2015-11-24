@@ -2,25 +2,33 @@
 (function($) {
 	$.fn.hideWhenToggler = function(options){
 		
-		var t = this;
+		
+		var hideWhenToggler = this;
 	
-		var esc$ = function(idTag, param){
+		// to make it work with colon separated hierarchical IDs as
+		// used by XPages
+		// @author Mark Roden
+		// @see http://openntf.org/XSnippets.nsf/snippet.xsp?id=x-jquery-selector-for-xpages
+		var x$ = function(idTag, param){
    			idTag=idTag.replace(/:/gi, "\\:")+(param ? param : "");
    			return($("#"+idTag));
 		}
-				
+		
+		
 		var settings = $.extend({
 			togglerId: undefined,
 			hideWhenChecked: false
 		}, options);
 	
+		// get the toggler status  
 		var isTogglerChecked = function(){
-			var rc = esc$(settings.togglerId).prop('checked');
+			var rc = x$(settings.togglerId).prop('checked');
 			return rc; 
 		};
-									
+		
+		// show hide elements - inverse if hideWhenChecked is set 
 		var toggle = function(){				
-			$(t).each(function(index,value){			
+			$(hideWhenToggler).each(function(index,value){			
 				if( settings.hideWhenChecked ){
 					isTogglerChecked() ? $(value).hide() : $(value).show();
 				} else {
@@ -28,11 +36,13 @@
 				}											
 			});
 		};
-							
-		esc$(settings.togglerId).on("change", function(){
+		
+		// register event handler to show/hide elements
+		x$(settings.togglerId).on("change", function(){
 			toggle();
 		})
 
+		// Set initial status 
  		toggle();
 			
 	}
